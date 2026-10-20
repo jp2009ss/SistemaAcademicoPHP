@@ -1,0 +1,23 @@
+.btn {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 4px;
+    color: #fff;
+    text-decoration: none;
+    font-size: 14px;
+    background-size: 200% 100%;
+    background-position: left center;
+    transition: background-position 0.4s ease;
+}
+
+.btn:hover {
+    background-position: right center;
+}
+
+.btn-editar {
+    background-image: linear-gradient(to right, #0d47a1, #64b5f6, #0d47a1);
+}
+
+.btn-apagar {
+    background-image: linear-gradient(to right, #b71c1c, #ef9a9a, #b71c1c);
+}
