@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Atualizar Alunos</title>
 </head>
-<body>
-
+<body style="body">
   <!-- Barra de Navegação -->
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
   <div class="container-fluid">
@@ -106,36 +106,33 @@ if(isset($_GET['apagar'])){
 
 
 ?>
-
-<!DOCTYPE html>
-<html lang="pt-br">
-<center>
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Atualizar Alunos</title>
-</head>
-
+<html>
+    <center>
 <body>
     <h2>Lista de Alunos</h2>
-    <table class="">
+    <table>
         <thead>
             <tr>
-                <th>Id </th>
-                <th>Nome </th>
-                <th>Curso </th>
-                <th>Ações </th>
+                <th>Id</th>
+                <th>Nome</th>
+                <th>Curso</th>
+                <th colspan="2">Ações</th>
             </tr>
         </thead>
         <tbody>
             <?php while ($aluno = mysqli_fetch_assoc($alunos)): ?>
                 <tr>
                     <td><?= $aluno['idMatricula'] ?></td>
-                    <td><?= $aluno['nome'] ?></td>
-                    <td><?= $aluno['curso'] ?></td>
-                    <td><a href="?editar=<?= $aluno['idMatricula'] ?>" class="btn btn-editar">Editar</a></td>
-                    <td><a href="?apagar=<?= $aluno["idMatricula"] ?>" class="btn btn-apagar">Apagar</a></td>
+                    <td><?= htmlspecialchars($aluno['nome']) ?></td>
+                    <td><?= htmlspecialchars($aluno['curso']) ?></td>
+                    <td>
+                        <a href="?editar=<?= $aluno['idMatricula'] ?>" class="btn btn-editar">Editar</a>
+                    </td>
+                    <td>
+                        <a href="?apagar=<?= $aluno['idMatricula'] ?>"
+                           class="btn btn-apagar"
+                           onclick="return confirm('Deseja realmente apagar este aluno?');">Apagar</a>
+                    </td>
                 </tr>
             <?php endwhile; ?>
         </tbody>
@@ -148,19 +145,18 @@ if(isset($_GET['apagar'])){
             <input type="hidden" name="idMatricula"
                 value="<?= $editaAluno['idMatricula'] ?>">
 
-            <label for="">Nome: </label>
+            <label>Nome: </label>
             <input type="text" name="nome"
-                value="<?= $editaAluno['nome'] ?>">
+                value="<?= htmlspecialchars($editaAluno['nome']) ?>">
 
-            <label for="">Curso: </label>
+            <label>Curso: </label>
             <input type="text" name="curso"
-                value="<?= $editaAluno['curso'] ?>">
+                value="<?= htmlspecialchars($editaAluno['curso']) ?>">
 
             <button type="submit" name="atualizar">Atualizar</button>
             <a href="atualizarCurso.php">Cancelar</a>
         </form>
     <?php endif; ?>
-
 </body>
-</center>
+        </center>
 </html>
