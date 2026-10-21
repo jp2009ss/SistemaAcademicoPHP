@@ -1,76 +1,32 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    <link rel="stylesheet" href="style.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Atualizar Alunos</title>
-</head>
-<body style="body">
-  <!-- Barra de Navegação -->
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="index.html">Sistema Acadêmico</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav">
-
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="index.html">Início</a>
-        </li>
-
-        <li class="nav-item">
-          <a class="nav-link" href="cadastro.php">Cadastrar</a>
-        </li>
-
-        <li class="nav-item">
-          <a class="nav-link" href="atualizarCurso.php">Atualizar Cadastro</a>
-        </li>
-
-        </li>
-      </ul>
-    </div>
-  </div>
-</nav>
-
-    
-
-
- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
-
 <?php
 
 require("conexao.php");
 
+// ATUALIZAR
 if (isset($_POST['atualizar'])) {
-    $idMatricula    = $_POST['idMatricula'];
-    $nome           = $_POST['nome'];
-    $curso          = $_POST['curso'];
+    $idMatricula = (int) $_POST['idMatricula'];
+    $nome        = mysqli_real_escape_string($conexao, $_POST['nome']);
+    $curso       = mysqli_real_escape_string($conexao, $_POST['curso']);
 
-    $atualizar = "UPDATE matricula SET nome = '$nome', curso = '$curso' WHERE idMatricula = '$idMatricula'";
+    $atualizar = "UPDATE matricula SET nome = '$nome', curso = '$curso' WHERE idMatricula = $idMatricula";
 
     if (mysqli_query($conexao, $atualizar)) {
         echo "
         <script>
-            alert('Dados atualizado com sucesso');
+            alert('Dados atualizados com sucesso');
             window.location='atualizarCurso.php';
         </script>";
         exit();
     } else {
-        echo "Erro ai atualizar" . mysqli_error($conexao);
+        echo "Erro ao atualizar: " . mysqli_error($conexao);
     }
 }
 
+// BUSCAR ALUNO PARA EDITAR
 $editaAluno = null;
 
 if (isset($_GET['editar'])) {
-
-    $idEditar = $_GET['editar'];
+    $idEditar = (int) $_GET['editar'];
 
     $resultado = mysqli_query(
         $conexao,
@@ -80,36 +36,65 @@ if (isset($_GET['editar'])) {
     $editaAluno = mysqli_fetch_assoc($resultado);
 }
 
-$alunos = mysqli_query(
-    $conexao,
-    "SELECT * FROM matricula"
-);
+// APAGAR
+if (isset($_GET['apagar'])) {
+    $idApagar = (int) $_GET['apagar'];
 
-
-if(isset($_GET['apagar'])){
-    $idMatricula = $_GET['apagar'];
-
-    $deletar = "DELETE FROM matricula WHERE idMatricula = $idMatricula";
+    $deletar = "DELETE FROM matricula WHERE idMatricula = $idApagar";
 
     if (mysqli_query($conexao, $deletar)) {
         echo "
         <script>
-            alert('Dado excluido com sucesso!');
+            alert('Dado excluído com sucesso!');
             window.location='atualizarCurso.php';
         </script>";
         exit();
     } else {
-        echo "Erro ao deletar." . mysqli_error($conexao);
+        echo "Erro ao deletar: " . mysqli_error($conexao);
     }
 }
 
-
+// LISTAR ALUNOS
+$alunos = mysqli_query($conexao, "SELECT * FROM matricula");
 
 ?>
-<html>
-    <center>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atualizar Alunos</title>
+
+    <!-- Bootstrap primeiro -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+
+    <!-- Seu CSS depois, para sobrescrever o Bootstrap -->
+    <link rel="stylesheet" href="style.css">
+</head>
 <body>
+
+    <!-- Barra de Navegação -->
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="">Sistema Acadêmico</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="cadastro.php">Cadastrar</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="atualizarCurso.php">Atualizar Cadastro</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
     <h2>Lista de Alunos</h2>
+
     <table>
         <thead>
             <tr>
@@ -157,6 +142,7 @@ if(isset($_GET['apagar'])){
             <a href="atualizarCurso.php">Cancelar</a>
         </form>
     <?php endif; ?>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-        </center>
 </html>
